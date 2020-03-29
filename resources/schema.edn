@@ -1,0 +1,134 @@
+{:objects
+ {:Loss
+  {:description "A loss function."
+   :fields
+   {
+    :type {:type (non-null String)
+           :description "Corresponds to Keras 2 loss names."}
+    }
+   }
+  :Optimizer
+  {:description "A loss function optimizer."
+   :fields
+   {
+    :type {:type (non-null String)
+           :description "Corresponds to Keras 2 optimizer names."}
+    :learningRate {:type Float
+                   :description "Optimizer learning rate."}
+    :hasDecay {:type Boolean
+               :description "Whether the optimizer uses learning rate decay."}
+    }
+   }
+  :Network
+  {:description "A neural network."
+   :fields
+   {
+    :name {:type (non-null String)}
+    :numLayers {:type Int}
+    :numInputs {:type Int}
+    :numOutputs {:type Int}
+    :optimizer {:type :Optimizer
+                :resolve :Network/optimizer}
+    :losses {:type (list :Loss)
+             :resolve :Network/losses}
+    }
+   }
+  }
+
+ :input-objects
+ {:NetworkInput
+  {:description "Input to query by network properties."
+   :fields
+   {
+    :minNumLayers {:type Int}
+    :maxNumLayers {:type Int}
+    :minNumInputs {:type Int}
+    :maxNumInputs {:type Int}
+    :minNumOutputs {:type Int}
+    :maxNumOutputs {:type Int}
+    }
+   }
+  :LayerInput
+  {:description "Input to query by layer properties. Consult the Keras 2 
+                documentation for which types can have which fields."
+   :fields
+   {
+    :type {:type String
+           :description "Corresponds to Keras 2 layer class names."}
+    :dtype {:type String
+            :description "Numpy datatype of the input layer."}
+    :activation {:type String
+                 :description "Keras 2 activation name for activation layers."}
+    :usesBias {:type Boolean
+               :description "Whether the layer uses bias."}
+    :padding {:type String
+              :description "Keras 2 padding name for conv layers."}
+    :minInputDim {:type Int
+                  :description "Minimum number of input dimensions of an
+                               input layer."}
+    :maxInputDim {:type Int
+                  :description "Maximum number of input dimensions of an
+                               input layer."}
+    :minUnits {:type Int
+               :description "Min number of dense units."}
+    :maxUnits {:type Int
+               :description "Max nubmer dense units."}
+    :minFilters {:type Int
+                 :description "Min number of filters for conv layers."}
+    :maxFilters {:type Int
+                 :description "Max number of filters for conv layers."}
+    :minKernelSize {:type Int
+                    :description "Minimum kernel size for conv layers."}
+    :maxKernelSize {:type Int
+                    :description "Maximum kernel size for conv layers."}
+    :minPoolSize {:type Int
+                  :description "Minimum pool size for pooling layers."}
+    :maxPoolSize {:type Int
+                  :description "Maximum pool size for pooling layers."}
+    :minStrideSize {:type Int
+                    :description "Minimum stride size for conv layers."}
+    :maxStrideSize {:type Int
+                    :description "Maximum stride size for conv layers."}
+    }
+   }
+  :LossInput
+  {:description "Input to query by loss properties."
+   :fields
+   {
+    :type {:type (non-null String)
+           :description "Corresponds to Keras 2 layer loss names."}
+    }
+   }
+  :OptimizerInput
+  {:description "Input to query by loss properties."
+   :fields {
+            :type {:type String
+                   :description "Corresponds to Keras 2 layer optimizer names."}
+            :hasDecay {:type Boolean
+                       :description "Whether the optimizer uses learning rate decay."}
+            }
+   }
+  }
+:queries
+{:network
+ {:type :Network
+  :description "Access a network by name."
+  :args
+  {:name {:type (non-null String)}}
+  :resolve :query/network}
+ :networks
+ {:type (list :Network)
+  :description "Retrieve multiple networks by various filters."
+  :args
+  {:network {:type :NetworkInput
+             :description "Filter by network properties."}
+   :optimizers {:type (list :OptimizerInput)
+                :description "Filer by optimizer properties."}
+   :losses {:type (list :LossInput)
+            :description "Filter by multiple disjunctive loss properties."}
+   :layers {:type (list :LayerInput)
+            :description "Filter by multiple disjunctive layer properties."}
+   }
+  :resolve :query/networks}
+ }
+}

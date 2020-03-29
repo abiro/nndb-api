@@ -1,0 +1,5 @@
+; Default config over rides. See src/nndb/config.clj for all the 
+; configs.
+{nndb.config/graph-dir #config/property "nndb.graph-dir"
+ nndb.config/port #config/optional-to-int #config/property "nndb.port"
+ }

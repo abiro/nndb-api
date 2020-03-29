@@ -1,0 +1,4 @@
+; Dev config over rides. See src/nndb/config.clj for all the 
+; configs.
+{nndb.config/start-graphiql true
+ }
